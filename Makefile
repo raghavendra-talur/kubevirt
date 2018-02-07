@@ -64,6 +64,7 @@ cluster-clean:
 
 cluster-deploy: cluster-clean
 	./cluster/deploy.sh
+	./cluster/gk-deploy.sh
 
 cluster-sync: cluster-build cluster-deploy
 

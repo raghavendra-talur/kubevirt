@@ -55,6 +55,20 @@ Vagrant.configure(2) do |config|
       domain.nested = true  # enable nested virtualization
       domain.cpu_mode = "host-model"
 
+      # We need a brick partition, lets have a 5G disk for that.
+      # If you need more bricks, just add more letters to the
+      # string below.
+      "bcd".split("").each do |i|
+        domain.storage :file,
+        #:path           => "",
+        #:allow_existing => "",
+        :device         => "vd#{i}",
+        :size           => "5G",
+        :type           => "qcow2",
+        :bus            => "virtio",
+        :cache          => "default"
+      end
+
       if $use_rng then
           # Will be part of vagrant-libvirt 0.0.36:
           #     https://github.com/vagrant-libvirt/vagrant-libvirt/pull/654
@@ -91,6 +105,8 @@ Vagrant.configure(2) do |config|
             domain.storage :file, :size => '10G', :path => $libvirt_prefix.to_s + '_master_docker.img', :allow_existing => true
           end
       end
+
+
 
       master.vm.provision "shell" do |s|
         s.path = "cluster/#{$provider}/setup_master.sh"
